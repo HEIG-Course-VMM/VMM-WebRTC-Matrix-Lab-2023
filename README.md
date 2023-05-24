@@ -1,5 +1,5 @@
-WebRTC video-conferencing with a Matrix homeserver - SOLUTION
-=============================================================
+WebRTC video-conferencing with a Matrix homeserver
+==================================================
 
 The goal of this project is to implement a WebRTC video-conferencing and chat system with two parts:
 
