@@ -5,7 +5,7 @@ services:
       - SYNAPSE_SERVER_NAME=vmm.matrix.host
       - SYNAPSE_REPORT_STATS=yes
     image: matrixdotorg/synapse:latest
-    container_name: synapse
+    container_name: vmm_synapse
     restart: unless-stopped
     volumes:
       - ./data:/data
