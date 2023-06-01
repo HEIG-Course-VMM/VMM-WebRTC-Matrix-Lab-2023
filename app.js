@@ -4,9 +4,7 @@ const https = require("https");
 const app = express();
 const port = 3000;
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+app.use(express.static("static-content"));
 
 https
   .createServer(
@@ -14,7 +12,7 @@ https
       key: fs.readFileSync("localhost.key"),
       cert: fs.readFileSync("localhost.crt"),
     },
-    app,
+    app
   )
   .listen(3000, () => {
     console.log("server is runing at port 3000");

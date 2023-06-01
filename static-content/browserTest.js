@@ -1,16 +1,16 @@
 console.log("Loading browser sdk");
-const BASE_URL = "https://matrix.org";
+const BASE_URL = "http://localhost:8008";
 const TOKEN = "accesstokengoeshere";
 const USER_ID = "@username:localhost";
 const ROOM_ID = "!room:id";
 const DEVICE_ID = "some_device_id";
 
-const client = matrixcs.createClient({
-  baseUrl: BASE_URL,
-  accessToken: TOKEN,
-  userId: USER_ID,
-  deviceId: DEVICE_ID,
-});
+const client = matrixcs.createClient({ baseUrl: BASE_URL });
+client
+  .login("m.login.password", { user: "admin", password: "admin" })
+  .then((response) => {
+    console.log(response.access_token);
+  });
 let call;
 
 function disableButtons(place, answer, hangup) {
