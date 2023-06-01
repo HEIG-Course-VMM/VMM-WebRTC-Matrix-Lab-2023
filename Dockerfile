@@ -1,10 +1,8 @@
-FROM node:14-alpine
+FROM node:20.2-alpine3.16
 
 WORKDIR /app
 
-COPY ./clientApp/package.json ./clientApp/package-lock.json ./
-RUN npm install --production
+COPY ./clientApp/* ./
+RUN npm install
 
-COPY ./clientApp/client.js .
-
-CMD ["node", "client.js"]
+CMD ["node", "server.js"]
