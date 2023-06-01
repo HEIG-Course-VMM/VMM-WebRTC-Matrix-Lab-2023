@@ -1,8 +1,8 @@
 console.log("Loading browser sdk");
-const BASE_URL = "https://matrix.org";
-const TOKEN = "accesstokengoeshere";
-const USER_ID = "@username:localhost";
-const ROOM_ID = "!room:id";
+const BASE_URL = "http://localhost:8008";
+const TOKEN = "syt_dXNlcjE_erUSRBKrAhGvaNOIGkJs_3arYzf";
+const USER_ID = "@user1:vmm.matrix.host";
+const ROOM_ID = "!dKOPGaCXGKEVaXwynr:vmm.matrix.host";
 const DEVICE_ID = "some_device_id";
 
 const client = matrixcs.createClient({
