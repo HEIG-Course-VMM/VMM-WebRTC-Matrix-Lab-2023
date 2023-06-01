@@ -32,6 +32,14 @@ form_secret: "Zo9C1AS#d8Wm4s38BaI,HaZA;nU,:s-P_oF~16ID,&ZetP=y#W"
 signing_key_path: "/data/vmm.matrix.host.signing.key"
 trusted_key_servers:
   - server_name: "matrix.org"
-
-
+rc_login:
+  address:
+    per_second: 0.15
+    burst_count: 100
+  account:
+    per_second: 0.18
+    burst_count: 100
+  failed_attempts:
+    per_second: 0.19
+    burst_count: 7
 # vim:ft=yaml
