@@ -11,3 +11,9 @@ services:
         GID: 1000
     ports:
         - "8008:8008/tcp"
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
