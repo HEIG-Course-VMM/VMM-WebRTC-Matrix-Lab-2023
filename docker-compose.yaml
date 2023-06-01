@@ -15,5 +15,7 @@ services:
     volumes:
       - ./matrix-data:/data
     environment:
-      - SYNAPSE_SERVER_NAME=example.com
+      - SYNAPSE_SERVER_NAME=vmm.matrix.host
       - SYNAPSE_REPORT_STATS=yes
+      - UID=1000
+      - GID=1000
