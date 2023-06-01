@@ -1,0 +1,19 @@
+version: '3'
+services:
+  expressjs:
+    build:
+      context: web
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+
+  synapse:
+    image: matrixdotorg/synapse:latest
+    ports:
+      - 8008:8008
+      - 8448:8448
+    volumes:
+      - ./matrix-data:/data
+    environment:
+      - SYNAPSE_SERVER_NAME=example.com
+      - SYNAPSE_REPORT_STATS=yes
