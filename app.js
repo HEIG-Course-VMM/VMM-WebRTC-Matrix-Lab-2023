@@ -1,6 +1,6 @@
-const fs = require("fs");
-const express = require("express");
-const https = require("https");
+import { readFileSync } from "fs";
+import express from "express";
+import { createServer } from "https";
 const app = express();
 const port = 3000;
 
@@ -8,11 +8,10 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-https
-  .createServer(
+createServer(
     {
-      key: fs.readFileSync("localhost.key"),
-      cert: fs.readFileSync("localhost.crt"),
+      key: readFileSync("localhost.key"),
+      cert: readFileSync("localhost.crt"),
     },
     app,
   )
