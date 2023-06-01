@@ -9,7 +9,8 @@ const ROOM_ID = "!room:id";
 const DEVICE_ID = "some_device_id";
 
 
-const client = matrixcs.createClient(BASE_URL);
+const client =  matrixcs.createClient(BASE_URL);
+
 client.login("m.login.password", {"user": USER_ID, "password": USER_PSW}).then((response) => {
     console.log(response.access_token);
 });
@@ -114,3 +115,7 @@ function syncComplete() {
     });
 }
 client.startClient();
+
+client.once('sync', function(state, prevState, res) {
+    console.log(state); // state will be 'PREPARED' when the client is ready to use
+});
