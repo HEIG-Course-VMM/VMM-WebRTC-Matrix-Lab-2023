@@ -6,10 +6,15 @@ const ROOM_ID = "!room:id";
 const DEVICE_ID = "some_device_id";
 
 async function main() {
-  const client = matrixcs.createClient({ baseUrl: BASE_URL });
-  let token = await client.login("m.login.password", {
-    user: "admin",
-    password: "admin",
+  let token = localStorage.getItem("token");
+  if (token == null) {
+    window.location.href = "/login.html";
+  }
+  token = JSON.parse(token);
+  const client = matrixcs.createClient({
+    baseUrl: BASE_URL,
+    accessToken: token.access_token,
+    userId: token.user_id,
   });
   console.log("Token : " + JSON.stringify(token));
   let call;
@@ -54,8 +59,7 @@ async function main() {
   window.onload = function () {
     document.getElementById("result").innerHTML =
       "<p>Please wait. Syncing...</p>";
-    document.getElementById("config").innerHTML =
-      "<p>" +
+    document.getElementById("config").innerHTML = "<p>" +
       "Homeserver: <code>" +
       BASE_URL +
       "</code><br/>" +
