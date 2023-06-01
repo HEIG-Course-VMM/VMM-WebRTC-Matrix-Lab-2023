@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  synapse:
+    environment:
+      - SYNAPSE_SERVER_NAME=vmm.matrix.host
+      - SYNAPSE_REPORT_STATS=yes
+    image: matrixdotorg/synapse:latest
+    container_name: synapse
+    restart: unless-stopped
+    volumes:
+      - ./data:/data
+    ports:
+      - "8008:8008"
+volumes:
+  data:
