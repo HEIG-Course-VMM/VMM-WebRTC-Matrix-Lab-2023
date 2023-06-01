@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  synapse:
+    image: matrixdotorg/synapse:latest
+    #command: generate
+    ports:
+      - 8008:8008
+    volumes:
+      - ./synapse-data:/data
+    environment:
+      - SYNAPSE_SERVER_NAME=vmm.matrix.host
+      - SYNAPSE_REPORT_STATS=yes
+
+
+
