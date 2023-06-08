@@ -1,24 +1,33 @@
 import React from "react";
-import { useState, useEffect } from "react";
 
-function Rooms({ client }) {
-    const [rooms, setRooms] = useState([]);
+class Rooms extends React.Component {
+    constructor(props) {
+        super(props);
 
-    useEffect(() => {
-        console.log(client);
+        this.state = {
+            rooms: [],
+        };
+    }
+
+    componentDidMount() {
+        const { client } = this.props;
         client.once("sync", (state, prevState, res) => {
-            setRooms(res.rooms.join);
+            const rooms = client.getRooms();
+            this.setState({ rooms: rooms.map((room) => room.name) });
         });
-    }, [client]);
+    }
 
-    return (
-        <div>
-            <h1>Rooms</h1>
-            <ul>
-                {rooms.map((room) => <li key={room}>{room}</li>)}
-            </ul>
-        </div>
-    );
+    render() {
+        const { rooms } = this.state;
+        return (
+            <div>
+                <h1>Rooms</h1>
+                <ul>
+                    {rooms.map((room) => <li key={room}>{room}</li>)}
+                </ul>
+            </div>
+        );
+    }
 }
 
 export default Rooms;

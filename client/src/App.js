@@ -18,10 +18,12 @@ class App extends React.Component {
     this.state = {
       client: null,
     };
+
+    this.setClient = this.setClient.bind(this);
   }
 
-  setClient = (client) => {
-    this.setState({ client: client });
+  setClient(client) {
+    this.setState({ client });
   }
 
   render() {

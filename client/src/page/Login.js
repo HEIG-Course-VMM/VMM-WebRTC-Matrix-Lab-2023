@@ -1,5 +1,8 @@
 import React from "react";
 import sdk from "matrix-js-sdk";
+import {
+    Navigate,
+} from "react-router-dom";
 
 class Login extends React.Component {
 
@@ -8,6 +11,7 @@ class Login extends React.Component {
         this.state = {
             username: null,
             password: null,
+            success: false,
         };
     }
 
@@ -21,14 +25,13 @@ class Login extends React.Component {
 
     handleLogin = (event) => {
         event.preventDefault();
+
         const newClient = sdk.createClient({ baseUrl: "http://localhost:8008" });
         newClient.login("m.login.password", {"user": this.state.username, "password": this.state.password}).then((response) => {
-            console.log(response);
             newClient.setAccessToken(response.access_token, response.device_id);
             newClient.startClient();
-            console.log(newClient);
-            console.log(this.props);
             this.props.setClient(newClient);
+            this.setState({ success: true });
         }).catch((error) => {
             console.log(error);
         });
@@ -36,7 +39,13 @@ class Login extends React.Component {
 
     render() {
         const { handleUsername, handlePassword, handleLogin } = this;
-        return (
+        const { success } = this.state;
+
+        if (success) {
+            return <Navigate to="/rooms" />;
+        }
+
+        return (            
             <div>
                 <h1>Login</h1>
                 <form>
