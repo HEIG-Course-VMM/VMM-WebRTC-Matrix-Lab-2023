@@ -1,40 +1,52 @@
-import { useState } from 'react';
+import React from "react";
 import sdk from "matrix-js-sdk";
 
-function Login({ client, setClient }) {
+class Login extends React.Component {
 
-    const [username, setUsername] = useState(null);
-    const [password, setPassword] = useState(null);
-
-    const handleUsername = (event) => {
-        setUsername(event.target.value);
+    constructor(props) {
+        super(props);
+        this.state = {
+            username: null,
+            password: null,
+        };
     }
 
-    const handlePassword = (event) => {
-        setPassword(event.target.value);
+    handleUsername = (event) => {
+        this.setState({ username: event.target.value });
     }
 
-    const handleLogin = (event) => {
+    handlePassword = (event) => {
+        this.setState({ password: event.target.value });
+    }
+
+    handleLogin = (event) => {
         event.preventDefault();
         const newClient = sdk.createClient({ baseUrl: "http://localhost:8008" });
-        client.login("m.login.password", {"user": username, "password": password}).then((response) => {
+        newClient.login("m.login.password", {"user": this.state.username, "password": this.state.password}).then((response) => {
             console.log(response);
-            setClient(newClient);
+            newClient.setAccessToken(response.access_token, response.device_id);
+            newClient.startClient();
+            console.log(newClient);
+            console.log(this.props);
+            this.props.setClient(newClient);
         }).catch((error) => {
             console.log(error);
         });
     }
 
-    return (
-        <div>
-            <h1>Login</h1>
-            <form>
-                <input type="text" placeholder="Username" onChange={handleUsername} />
-                <input type="password" placeholder="Password" onChange={handlePassword} />
-                <button onClick={handleLogin}>Login</button>
-            </form>
-        </div>
-    );
+    render() {
+        const { handleUsername, handlePassword, handleLogin } = this;
+        return (
+            <div>
+                <h1>Login</h1>
+                <form>
+                    <input type="text" placeholder="Username" onChange={handleUsername} />
+                    <input type="password" placeholder="Password" onChange={handlePassword} />
+                    <button onClick={handleLogin}>Login</button>
+                </form>
+            </div>
+        );
+    }
 }
 
 export default Login;

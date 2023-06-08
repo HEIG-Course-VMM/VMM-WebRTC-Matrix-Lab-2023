@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React from "react";
 
 import {
   BrowserRouter,
@@ -9,18 +9,34 @@ import {
 import sdk from "matrix-js-sdk";
 
 import Login from "./page/Login";
+import Rooms from "./page/Rooms";
 
-function App() {
+class App extends React.Component {
 
-  const [client, setClient] = useState(null);
+  constructor(props) {
+    super(props);
+    this.state = {
+      client: null,
+    };
+  }
 
-  return (
+  setClient = (client) => {
+    this.setState({ client: client });
+  }
+
+  render() {
+    const { client } = this.state;
+    const { setClient } = this;
+
+    return (
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login client={client} setClient={setClient} />} />
+          <Route path="/rooms" element={<Rooms client={client} />} />
         </Routes>
       </BrowserRouter>
-  );
+    )
+  }
 }
 
 export default App;
