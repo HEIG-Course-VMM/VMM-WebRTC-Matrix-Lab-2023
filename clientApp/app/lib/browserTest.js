@@ -1,15 +1,14 @@
-import sdk from 'matrix-js-sdk';
-
 console.log("Loading browser sdk");
 const BASE_URL = "http://127.0.0.1:8008";
-const TOKEN = "accesstokengoeshere";
 const USER_ID = "@user1:vmm.matrix.host";
 const ROOM_ID = "#room2:vmm.matrix.host";
-const DEVICE_ID = "some_device_id";
 
-const client = sdk.createClient("http://127.0.0.1:8008");
+const client = matrixcs.createClient({ baseUrl: "http://localhost:8008" });
 client.login("m.login.password", {"user": "user1", "password": "user1"}).then((response) => {
     console.log(response.access_token);
+    console.log(response.device_id);
+    client.setAccessToken(response.access_token, response.device_id);
+    client.startClient();
 });
 let call;
 
