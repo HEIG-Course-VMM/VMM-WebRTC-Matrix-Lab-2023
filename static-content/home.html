@@ -1,33 +1,59 @@
+<!DOCTYPE html>
 <html>
   <head>
     <title>Home page</title>
-    <script src="js/lib/browser-matrix.js"></script>
-    <script src="js/browserTest.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/purecss@2.0.5/build/pure-min.css"
+    />
   </head>
 
   <body>
-    You can place and receive calls with this example. Make sure to edit the
-    constants in
-    <code>browserTest.js</code> first.
-    <div id="config"></div>
-    <div id="result"></div>
-    <button id="call">Place Call</button>
-    <button id="answer">Answer Call</button>
-    <button id="hangup">Hangup Call</button>
-    <div id="videoBackground" class="video-background">
-      <video class="video-element" id="local"></video>
-      <video class="video-element" id="remote"></video>
+    <div id="mainDiv" align="center">
+      <h1>Make free video calls</h1>
+      <div id="callButtons" align="center">
+        <button id="callButton" onclick="call()">Call</button>
+        <button id="hangupButton" onclick="hangUp()">Hang up</button>
+      </div>
+      <h3>Streams and data channels</h3>
+      <table class="pure-table pure-table" width="90%">
+        <thead>
+          <tr>
+            <th>Local video</th>
+            <th>Remote video</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td width="50%">
+              <video
+                id="localVideo"
+                autoplay
+                mute
+                playsinline
+                width="100%"
+              ></video>
+            </td>
+            <td width="50%">
+              <video id="remoteVideo" autoplay playsinline width="100%"></video>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div id="chat" align="center">
+        <h3>Chat</h3>
+        <textarea
+          id="dataChannelOutput"
+          rows="5"
+          style="width: 90%"
+          disabled
+        ></textarea>
+        <textarea id="dataChannelInput" rows="1" style="width: 90%"></textarea>
+        <br />
+        <button id="sendButton" onclick="sendMessage()">Send message</button>
+      </div>
     </div>
   </body>
+  <script src="js/lib/browser-matrix.js"></script>
+  <script src="js/home.js"></script>
 </html>
-
-<style>
-  .video-background {
-    height: 500px;
-    margin: 10px;
-  }
-
-  .video-element {
-    height: 100%;
-  }
-</style>
