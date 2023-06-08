@@ -7,7 +7,17 @@ services:
     ports:
       - 8080:8080
     volumes:
-      - ./web:/usr/src/app
+      - ./web:/usr/src/app/backend
+
+  app:
+    build:
+      context: client
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./client:/usr/src/app/frontend
+      - /usr/src/app/frontend/node_modules
 
   synapse:
     image: matrixdotorg/synapse:latest
