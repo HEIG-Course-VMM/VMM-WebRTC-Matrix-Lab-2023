@@ -9,8 +9,13 @@ client.login("m.login.password", {"user": "user1", "password": "user1"}).then((r
     console.log(response.device_id);
     client.setAccessToken(response.access_token, response.device_id);
     client.startClient();
+    
+    client.once('sync', function(state, prevState, res) {
+        console.log(state); // state will be 'PREPARED' when the client is ready to use
+    });
 });
 let call;
+
 
 function disableButtons(place, answer, hangup) {
     document.getElementById("hangup").disabled = hangup;
@@ -110,4 +115,3 @@ function syncComplete() {
         addListeners(call);
     });
 }
-client.startClient();
