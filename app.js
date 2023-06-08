@@ -1,9 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const morgan = require('morgan');
 const https = require('https');
 const fs = require('fs');
-const path = require('path');
 
 const app = express();
 const httpsServer = https.createServer({

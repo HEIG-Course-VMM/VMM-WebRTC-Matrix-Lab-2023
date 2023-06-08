@@ -1,19 +1,30 @@
 console.log("Loading browser sdk");
 
 const BASE_URL = "http://localhost:8008";
-const TOKEN = "accesstokengoeshere";
+const TOKEN = "syt_dXNlcjE_wLbuITopgWeSzQjZQREV_33qjaW";
 const USER_ID = "@user1:vmm.matrix.host";
 const USER_PSW = "user1";
 
-const ROOM_ID = "!room:id";
+const ROOM_ID = "!jVxOVAcKJyLWgKuxIq:vmm.matrix.host";
 const DEVICE_ID = "some_device_id";
 
 
-const client =  matrixcs.createClient(BASE_URL);
-
-client.login("m.login.password", {"user": USER_ID, "password": USER_PSW}).then((response) => {
-    console.log(response.access_token);
+const client = matrixcs.createClient({
+    baseUrl: BASE_URL,
+    accessToken: TOKEN,
+    userId: USER_ID,
+    deviceId: DEVICE_ID,
 });
+
+
+
+//const client =  matrixcs.createClient(BASE_URL);
+
+//client.login("m.login.password", {"user": USER_ID, "password": USER_PSW}).then((response) => {
+//    console.log(response.access_token);
+//});
+
+
 let call;
 
 function disableButtons(place, answer, hangup) {
