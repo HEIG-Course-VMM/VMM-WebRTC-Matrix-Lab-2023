@@ -4,6 +4,7 @@ import {
   BrowserRouter,
   Routes,
   Route,
+  Navigate,
 } from "react-router-dom";
 
 import sdk from "matrix-js-sdk";
@@ -34,7 +35,7 @@ class App extends React.Component {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login client={client} setClient={setClient} />} />
-          <Route path="/rooms" element={<Rooms client={client} />} />
+          <Route path="/rooms" element={!client ? <Navigate to="/login" /> : <Rooms client={client} />} />
         </Routes>
       </BrowserRouter>
     )
