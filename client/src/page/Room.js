@@ -112,7 +112,15 @@ class Room extends React.Component {
   }
 
   sendMessage = () => {
-    console.log("Sending message...");
+    const { client } = this.props;
+    const { roomId } = this.props.params;
+    client.sendEvent(roomId, "m.room.message", { "body": "Hello world!" }, "", (err, res) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(res);
+        }
+    });
   }
   
   render() {
@@ -124,38 +132,38 @@ class Room extends React.Component {
       }
 
       return (
-          <div id='mainDiv' align="center">
-              <h1>Make free video calls</h1>
-              <div id='callButtons' align="center">
-                  <button id="callButton">Call</button>
-                  <button id="hangupButton">Hang up</button>
-                  <button id="answerButton">Answer</button>
-              </div>
-              <div id="result"></div>
-              <h3>Streams and data channels</h3>
-              <table class="pure-table pure-table" width="90%">
-                  <thead>
-                      <tr>
-                          <th>Local video</th>
-                          <th>Remote video</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      <tr>
-                          <td width="50%"> <video id="localVideo" autoplay mute playsinline width="100%"></video> </td>
-                          <td width="50%"> <video id="remoteVideo" autoplay playsinline width="100%"></video> </td>
-                      </tr>
-                  </tbody>
-              </table>
-              <div id='chat' align="center">
-                  <h3>Chat</h3>
-                  <textarea id="dataChannelOutput" rows="5" style={{width:"90%"}} disabled></textarea>
-                  <textarea id="dataChannelInput" rows="1" style={{width:"90%"}}></textarea>
-                  <button id="sendButton" onclick="sendMessage()">Send message</button>
-              </div>
-          </div>
-      );
-  }
+        <div id='mainDiv' align="center">
+            <h1>Make free video calls</h1>
+            <div id='callButtons' align="center">
+                <button id="callButton">Call</button>
+                <button id="hangupButton">Hang up</button>
+                <button id="answerButton">Answer</button>
+            </div>
+            <div id="result"></div>
+            <h3>Streams and data channels</h3>
+            <table class="pure-table pure-table" width="90%">
+                <thead>
+                    <tr>
+                        <th>Local video</th>
+                        <th>Remote video</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td width="50%"> <video id="localVideo" autoplay mute playsinline width="100%"></video> </td>
+                        <td width="50%"> <video id="remoteVideo" autoplay playsinline width="100%"></video> </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div id='chat' align="center">
+                <h3>Chat</h3>
+                <textarea id="dataChannelOutput" rows="5" style={{width:"90%"}} disabled></textarea>
+                <textarea id="dataChannelInput" rows="1" style={{width:"90%"}}></textarea>
+                <button id="sendButton" onclick="sendMessage()">Send message</button>
+            </div>
+        </div>
+    );
+    }
 }
 
 export default withParams(Room);
