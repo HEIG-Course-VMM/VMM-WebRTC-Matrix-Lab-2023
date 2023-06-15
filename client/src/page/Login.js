@@ -26,7 +26,9 @@ class Login extends React.Component {
     handleLogin = (event) => {
         event.preventDefault();
 
-        const newClient = sdk.createClient({ baseUrl: "http://localhost:8008" });
+        const deviceId = Math.random().toString(36).substring(2, 15)
+
+        const newClient = sdk.createClient({ baseUrl: "http://localhost:8008", deviceId: deviceId });
         newClient.login("m.login.password", {"user": this.state.username, "password": this.state.password}).then((response) => {
             newClient.setAccessToken(response.access_token, response.device_id);
             newClient.startClient();

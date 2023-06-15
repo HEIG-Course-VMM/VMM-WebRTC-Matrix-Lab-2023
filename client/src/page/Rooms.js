@@ -24,7 +24,7 @@ class Rooms extends React.Component {
             <div>
                 <h1>Rooms</h1>
                 <ul>
-                    {rooms.map((room) => <Link to={`/rooms/${room.roomId}`}><li>{room.name}</li></Link>)}
+                    {rooms.map((room) => <Link to={`/rooms/${room.roomId}`} key={room.roomId}><li>{room.name}</li></Link>)}
                 </ul>
             </div>
         );
