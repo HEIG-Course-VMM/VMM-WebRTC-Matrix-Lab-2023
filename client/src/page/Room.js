@@ -1,17 +1,45 @@
 import React from "react";
-import { __RouterContext as RouterContext } from 'react-router-dom';
+import { useParams } from "react-router-dom";
+
+function withParams(Component) {
+    return props => <Component {...props} params={useParams()} />;
+}
 
 class Room extends React.Component {
-    static contextType = RouterContext;
-
     render() {
-        const { params } = this.context.match;
-        const id = params.id;
-    
+        const { roomId } = this.props.params;
+
         return (
-            <div>
-                <h1>Room {id}</h1>
+            <div id='mainDiv' align="center">
+                <h1>Room {roomId}</h1>
+                <div id='callButtons' align="center">
+                    <button id="callButton" onclick="call()">Call</button>
+                    <button id="hangupButton" onclick="hangUp()">Hang up</button>
+                </div>
+                <h3>Streams and data channels</h3>
+                <table class="pure-table pure-table" width="90%">
+                    <thead>
+                        <tr>
+                            <th>Local video</th>
+                            <th>Remote video</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td width="50%"> <video id="localVideo" autoplay mute playsinline width="100%"></video> </td>
+                            <td width="50%"> <video id="remoteVideo" autoplay playsinline width="100%"></video> </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div id='chat' align="center">
+                    <h3>Chat</h3>
+                    <textarea id="dataChannelOutput" rows="5" style={{width: "90%"}} disabled></textarea>
+                    <textarea id="dataChannelInput" rows="1" style={{width: "90%"}}></textarea>
+                    <button id="sendButton" onclick="sendMessage()">Send message</button>
+                </div>
             </div>
         );
     }
 }
+
+export default withParams(Room);
