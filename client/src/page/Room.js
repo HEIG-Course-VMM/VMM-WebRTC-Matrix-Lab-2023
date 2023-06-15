@@ -14,6 +14,7 @@ class Room extends React.Component {
             connected: false,
             chat: [],
             input: "",
+            call: null,
         };
     }
 
@@ -31,6 +32,17 @@ class Room extends React.Component {
                     const { chat } = this.state;
                     chat.push(`${sender}: ${message}`);
                     this.setState({ chat });
+                }
+            });
+
+            client.on("Call.incoming", (call, room) => {
+                console.log("Call ringing");
+                const { roomId } = this.props.params;
+                if (call.roomId === roomId) {
+                    console.log("Call ringing in this room");
+                    this.addListeners(call);
+                    this.disableButtons(true, false, false);
+                    this.setState({ call });
                 }
             });
         }).catch((error) => {
@@ -82,12 +94,15 @@ class Room extends React.Component {
   placeCall = () => {
     console.log("Placing call...");
     const { roomId } = this.props.params;
-    this.call = this.props.client.createCall(roomId);
-    console.log("Call => %s", this.call);
-    this.addListeners(this.call);
-    this.call.placeVideoCall();
-    document.getElementById("result").innerHTML = "<p>Placed call.</p>";
+    const { client } = this.props;
+    const call = client.createCall(roomId);
+    
+    console.log("Call => %s", call);
+    this.addListeners(call);
+    call.placeVideoCall();
     this.disableButtons(true, false, false);
+
+    this.setState({ call });
   }
 
   hangup = () => {
@@ -99,8 +114,8 @@ class Room extends React.Component {
 
   answer = () => {
     console.log("Answering call...");
-    console.log("Call => %s", this.call);
-    this.call.answer();
+    const { call } = this.state;
+    call.answer();
     this.disableButtons(true, true, false);
     document.getElementById("result").innerHTML = "<p>Answered call.</p>";
   }
