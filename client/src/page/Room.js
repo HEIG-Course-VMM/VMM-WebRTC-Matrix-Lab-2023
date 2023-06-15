@@ -1,6 +1,5 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import sdk from "matrix-js-sdk";
 
 function withParams(Component) {
     return props => <Component {...props} params={useParams()} />;
@@ -145,7 +144,6 @@ class Room extends React.Component {
     }
 
   render() {
-      const { client } = this.props;
       const { connected } = this.state;
 
       if (!connected) {
