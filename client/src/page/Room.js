@@ -15,6 +15,7 @@ class Room extends React.Component {
             chat: [],
             input: "",
             call: null,
+            result: ""
         };
     }
 
@@ -36,10 +37,9 @@ class Room extends React.Component {
             });
 
             client.on("Call.incoming", (call, room) => {
-                console.log("Call ringing");
                 const { roomId } = this.props.params;
                 if (call.roomId === roomId) {
-                    console.log("Call ringing in this room");
+                    this.setState({ result: "Call ringing..." });
                     this.addListeners(call);
                     this.disableButtons(true, false, false);
                     this.setState({ call });
@@ -65,7 +65,7 @@ class Room extends React.Component {
     let lastError = "";
     call.on("hangup", () => {
         this.disableButtons(false, true, true);
-        document.getElementById("result").innerHTML = "<p>Call ended. Last error: " + lastError + "</p>";
+        this.setState({ result: "Call ended. Last error: " + lastError });
     });
     call.on("error", (err) => {
         lastError = err.message;
@@ -100,7 +100,7 @@ class Room extends React.Component {
     console.log("Call => %s", call);
     this.addListeners(call);
     call.placeVideoCall();
-    this.disableButtons(true, false, false);
+    this.disableButtons(true, false, true);
 
     this.setState({ call });
   }
@@ -109,7 +109,7 @@ class Room extends React.Component {
     console.log("Hanging up call...");
     console.log("Call => %s", this.call);
     this.call.hangup();
-    document.getElementById("result").innerHTML = "<p>Hungup call.</p>";
+    this.setState({ result: "Hungup call." });
   }
 
   answer = () => {
@@ -117,21 +117,7 @@ class Room extends React.Component {
     const { call } = this.state;
     call.answer();
     this.disableButtons(true, true, false);
-    document.getElementById("result").innerHTML = "<p>Answered call.</p>";
-  }
-
-  syncComplete = () => {
-    document.getElementById("result").innerHTML = "<p>Ready for calls.</p>";
-    this.disableButtons(false, true, true);
-
-    const { client } = this.props;
-    client.on("Call.incoming", function (c) {
-        console.log("Call ringing");
-        this.disableButtons(true, false, false);
-        document.getElementById("result").innerHTML = "<p>Incoming call...</p>";
-        this.call = c;
-        this.addListeners(this.call);
-    });
+    this.setState({ result: "Answered call." });
   }
 
     sendMessage = (e) => {
@@ -168,7 +154,7 @@ class Room extends React.Component {
                   <button id="hangupButton" onClick={this.hangup}>Hang up</button>
                   <button id="answerButton" onClick={this.answer}>Answer</button>
               </div>
-              <div id="result"></div>
+              <div id="result">{this.state.result}</div>
               <h3>Streams and data channels</h3>
               <table className="pure-table pure-table" width="90%">
                   <thead>
