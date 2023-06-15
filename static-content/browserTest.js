@@ -6,7 +6,7 @@ const USER_ID = "@user1:vmm.matrix.host";
 const USER_PSW = "user1";
 
 const ROOM_ID = "!tcCQobxnDOHnIOGmdY:vmm.matrix.host";
-const DEVICE_ID = "some_device_id";
+const DEVICE_ID = "ABCDEFGF";
 
 
 //const client = matrixcs.createClient({
@@ -22,10 +22,7 @@ let client;
 
 
 async function login(){
-    client =  matrixcs.createClient({baseUrl:BASE_URL});
-
-    console.log(client);
-
+    client =  matrixcs.createClient({baseUrl:BASE_URL, deviceId: DEVICE_ID});
     
     let id = document.getElementById('username').value; 
     let pass = document.getElementById('password').value; 
@@ -37,9 +34,11 @@ async function login(){
 
     console.log("LOGIN");
 
-    console.log(response.access_token);
+    console.log("Access token: " + response.access_token);
 
-    //client.setAccessToken(response.access_token, response.device_id);
+    console.log("Device id: " + response.device_id);
+
+    client.setAccessToken(response.access_token);
     
 
     client.startClient();
