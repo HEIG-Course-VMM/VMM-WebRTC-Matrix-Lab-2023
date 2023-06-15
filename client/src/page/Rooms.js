@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 class Rooms extends React.Component {
     constructor(props) {
@@ -23,7 +24,7 @@ class Rooms extends React.Component {
             <div>
                 <h1>Rooms</h1>
                 <ul>
-                    {rooms.map((room) => <li key={room}>{room}</li>)}
+                    {rooms.map((room) => <Link to={`/rooms/${room}`}><li>{room}</li></Link>)}
                 </ul>
             </div>
         );
