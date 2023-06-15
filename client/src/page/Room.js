@@ -15,6 +15,9 @@ class Room extends React.Component {
             chat: [],
             input: "",
             call: null,
+            place: false,
+            hangup: true,
+            answer: true,
         };
     }
 
@@ -41,8 +44,7 @@ class Room extends React.Component {
                 if (call.roomId === roomId) {
                     console.log("Call ringing in this room");
                     this.addListeners(call);
-                    this.disableButtons(true, false, false);
-                    this.setState({ call });
+                    this.setState({ call, place: true, hangup: true, answer: false });
                 }
             });
         }).catch((error) => {
@@ -56,15 +58,13 @@ class Room extends React.Component {
     }
 
     disableButtons = (place, answer, hangup)  => {
-        document.getElementById("hangupButton").disabled = hangup;
-        document.getElementById("answerButton").disabled = answer;
-        document.getElementById("callButton").disabled = place;
+        this.setState({ place, answer, hangup });
     }
 
   addListeners = (call) => {
     let lastError = "";
     call.on("hangup", () => {
-        this.disableButtons(false, true, true);
+        console.log("Call hangup, disabling buttons false true true");
         this.setState({ call: null });
 
         const remoteElement = document.getElementById("remoteVideo");
@@ -72,11 +72,13 @@ class Room extends React.Component {
 
         remoteElement.srcObject = null;
         localElement.srcObject = null;
+
+        this.setState({ place: false, hangup: true, answer: true });
     });
     call.on("error", (err) => {
         lastError = err.message;
         call.hangup();
-        this.disableButtons(false, true, true);
+        console.log("Call error, disabling buttons false true true");
     });
     call.on("feeds_changed", (feeds) => {
         const localFeed = feeds.find((feed) => feed.isLocal());
@@ -87,12 +89,16 @@ class Room extends React.Component {
 
             if (remoteFeed) {
                 remoteElement.srcObject = remoteFeed.stream;
-                remoteElement.play();
+                remoteElement.play().catch((error) => {
+                    console.log(error);
+                });
             }
             if (localFeed) {
                 localElement.muted = true;
                 localElement.srcObject = localFeed.stream;
-                localElement.play();
+                localElement.play().catch((error) => {
+                    console.log(error);
+                });
             }
         });
     }
@@ -102,18 +108,17 @@ class Room extends React.Component {
     const { roomId } = this.props.params;
     const { client } = this.props;
     const call = client.createCall(roomId);
-    
+    this.disableButtons(true, true, false);
     console.log("Call => %s", call);
     this.addListeners(call);
     call.placeVideoCall();
-    this.disableButtons(true, false, true);
-
-    this.setState({ call });
+    this.setState({ call, place: true, hangup: false });
   }
 
   hangup = () => {
     console.log("Hanging up call...");
     const { call } = this.state;
+    this.setState({ call: null, place: false, hangup: true, answer: true });
     call.hangup();
     document.getElementById("result").innerHTML = "<p>Hungup call.</p>";
   }
@@ -122,22 +127,8 @@ class Room extends React.Component {
     console.log("Answering call...");
     const { call } = this.state;
     call.answer();
-    this.disableButtons(true, true, false);
+    this.setState({ place: true, hangup: false, answer: true });
     document.getElementById("result").innerHTML = "<p>Answered call.</p>";
-  }
-
-  syncComplete = () => {
-    document.getElementById("result").innerHTML = "<p>Ready for calls.</p>";
-    this.disableButtons(false, true, true);
-
-    const { client } = this.props;
-    client.on("Call.incoming", function (c) {
-        console.log("Call ringing");
-        this.disableButtons(true, false, false);
-        document.getElementById("result").innerHTML = "<p>Incoming call...</p>";
-        this.call = c;
-        this.addListeners(this.call);
-    });
   }
 
     sendMessage = (e) => {
@@ -170,9 +161,9 @@ class Room extends React.Component {
           <div id='mainDiv' align="center">
               <h1>Make free video calls</h1>
               <div id='callButtons' align="center">
-                  <button id="callButton" onClick={this.placeCall}>Call</button>
-                  <button id="hangupButton" onClick={this.hangup}>Hang up</button>
-                  <button id="answerButton" onClick={this.answer}>Answer</button>
+                  <button id="callButton" onClick={this.placeCall} disabled={this.state.place}>Call</button>
+                  <button id="hangupButton" onClick={this.hangup} disabled={this.state.hangup}>Hangup</button>
+                  <button id="answerButton" onClick={this.answer} disabled={this.state.answer}>Answer</button>
               </div>
               <div id="result"></div>
               <h3>Streams and data channels</h3>
