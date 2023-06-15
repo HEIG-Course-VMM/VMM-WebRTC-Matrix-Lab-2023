@@ -1,5 +1,10 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 import sdk from "matrix-js-sdk";
+
+function withParams(Component) {
+  return props => <Component {...props} params={useParams()} />;
+}
 
 class Room extends React.Component {
 
@@ -9,9 +14,9 @@ class Room extends React.Component {
   }
 
   disableButtons = (place, answer, hangup)  => {
-    document.getElementById("hangup").disabled = hangup;
-    document.getElementById("answer").disabled = answer;
-    document.getElementById("call").disabled = place;
+    document.getElementById("hangupButton").disabled = hangup;
+    document.getElementById("answerButton").disabled = answer;
+    document.getElementById("callButton").disabled = place;
   }
 
   addListeners = (call) => {
@@ -29,8 +34,8 @@ class Room extends React.Component {
         const localFeed = feeds.find((feed) => feed.isLocal());
         const remoteFeed = feeds.find((feed) => !feed.isLocal());
 
-        const remoteElement = document.getElementById("remote");
-        const localElement = document.getElementById("local");
+        const remoteElement = document.getElementById("remoteVideo");
+        const localElement = document.getElementById("localVideo");
 
         if (remoteFeed) {
             remoteElement.srcObject = remoteFeed.stream;
@@ -48,9 +53,10 @@ class Room extends React.Component {
     document.getElementById("result").innerHTML = "<p>Ready for calls.</p>";
     this.disableButtons(false, true, true);
 
-    document.getElementById("call").onclick = function () {
+    document.getElementById("callButton").onclick = function () {
         console.log("Placing call...");
-        this.call = sdk.createNewMatrixCall(client, ROOM_ID);
+        const { roomId } = this.props.params;
+        this.call = sdk.createNewMatrixCall(client, roomId);
         console.log("Call => %s", this.call);
         this.addListeners(this.call);
         this.call.placeVideoCall();
@@ -58,14 +64,14 @@ class Room extends React.Component {
         this.disableButtons(true, false, false);
     };
 
-    document.getElementById("hangup").onclick = function () {
+    document.getElementById("hangupButton").onclick = function () {
         console.log("Hanging up call...");
         console.log("Call => %s", this.call);
         this.call.hangup();
         document.getElementById("result").innerHTML = "<p>Hungup call.</p>";
     };
 
-    document.getElementById("answer").onclick = function () {
+    document.getElementById("answerButton").onclick = function () {
         console.log("Answering call...");
         console.log("Call => %s", this.call);
         this.call.answer();
@@ -88,9 +94,11 @@ class Room extends React.Component {
       <div id='mainDiv' align="center">
         <h1>Make free video calls</h1>
         <div id='callButtons' align="center">
-            <button id="callButton" onclick="call()">Call</button>
-            <button id="hangupButton" onclick="hangUp()">Hang up</button>
+            <button id="callButton">Call</button>
+            <button id="hangupButton">Hang up</button>
+            <button id="answerButton">Answer</button>
         </div>
+        <div id="result"></div>
         <h3>Streams and data channels</h3>
         <table class="pure-table pure-table" width="90%">
             <thead>
@@ -108,8 +116,8 @@ class Room extends React.Component {
         </table>
         <div id='chat' align="center">
             <h3>Chat</h3>
-            <textarea id="dataChannelOutput" rows="5" style="width:90%" disabled></textarea>
-            <textarea id="dataChannelInput" rows="1" style="width:90%"></textarea>
+            <textarea id="dataChannelOutput" rows="5" style={{width:"90%"}} disabled></textarea>
+            <textarea id="dataChannelInput" rows="1" style={{width:"90%"}}></textarea>
             <button id="sendButton" onclick="sendMessage()">Send message</button>
         </div>
       </div>
@@ -117,4 +125,4 @@ class Room extends React.Component {
   }
 }
 
-export default Room;
+export default withParams(Room);

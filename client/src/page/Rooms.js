@@ -14,7 +14,7 @@ class Rooms extends React.Component {
         const { client } = this.props;
         client.once("sync", (state, prevState, res) => {
             const rooms = client.getRooms();
-            this.setState({ rooms: rooms.map((room) => room.name) });
+            this.setState({ rooms });
         });
     }
 
@@ -24,7 +24,7 @@ class Rooms extends React.Component {
             <div>
                 <h1>Rooms</h1>
                 <ul>
-                    {rooms.map((room) => <Link to={`/rooms/${room}`}><li>{room}</li></Link>)}
+                    {rooms.map((room) => <Link to={`/rooms/${room.roomId}`}><li>{room.name}</li></Link>)}
                 </ul>
             </div>
         );
