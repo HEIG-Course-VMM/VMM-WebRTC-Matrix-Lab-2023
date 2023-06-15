@@ -65,7 +65,13 @@ class Room extends React.Component {
     let lastError = "";
     call.on("hangup", () => {
         this.disableButtons(false, true, true);
-        this.setState({ result: "Call ended. Last error: " + lastError });
+        this.setState({ call: null, result: "Call ended. Last error: " + lastError });
+
+        const remoteElement = document.getElementById("remoteVideo");
+        const localElement = document.getElementById("localVideo");
+
+        remoteElement.srcObject = null;
+        localElement.srcObject = null;
     });
     call.on("error", (err) => {
         lastError = err.message;
@@ -107,9 +113,9 @@ class Room extends React.Component {
 
   hangup = () => {
     console.log("Hanging up call...");
-    console.log("Call => %s", this.call);
-    this.call.hangup();
-    this.setState({ result: "Hungup call." });
+    const { call } = this.state;
+    call.hangup();
+    this.setState({result: "Hungup call."})
   }
 
   answer = () => {
