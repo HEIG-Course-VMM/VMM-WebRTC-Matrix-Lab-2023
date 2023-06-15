@@ -106,7 +106,7 @@ class Room extends React.Component {
     console.log("Call => %s", call);
     this.addListeners(call);
     call.placeVideoCall();
-    this.disableButtons(true, false, false);
+    this.disableButtons(true, false, true);
 
     this.setState({ call });
   }
