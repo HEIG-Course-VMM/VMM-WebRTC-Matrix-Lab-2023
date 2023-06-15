@@ -12,6 +12,8 @@ class Room extends React.Component {
         this.call = null;
         this.state = {
             connected: false,
+            chat: [],
+            input: "",
         };
     }
 
@@ -23,16 +25,22 @@ class Room extends React.Component {
             this.setState({ connected: true });
 
             client.on("Room.timeline", (event, room) => {
-                console.log("New message");
-                console.log(event);
-                const sender = event.sender.name;
-                const message = event.event.content.body;
-                console.log("Message from %s: %s", sender, message);
+                if (event.event.type === "m.room.message") {
+                    const sender = event.sender.name;
+                    const message = event.event.content.body;
+                    const { chat } = this.state;
+                    chat.push(`${sender}: ${message}`);
+                    this.setState({ chat });
+                }
             });
         }).catch((error) => {
             console.log(error);
             this.setState({ connected: false });
         });
+    }
+
+    handleInput = (event) => {
+        this.setState({ input: event.target.value });
     }
 
     disableButtons = (place, answer, hangup)  => {
@@ -111,17 +119,23 @@ class Room extends React.Component {
     });
   }
 
-  sendMessage = () => {
-    const { client } = this.props;
-    const { roomId } = this.props.params;
-    client.sendEvent(roomId, "m.room.message", { "body": "Hello world!" }, "", (err, res) => {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log(res);
+    sendMessage = (e) => {
+        e.preventDefault();
+        const { client } = this.props;
+        const { roomId } = this.props.params;
+        const { input } = this.state;
+        const message = {
+            "msgtype": "m.text",
+            "body": input,
         }
-    });
-  }
+        this.setState({ input: "" });
+        client.sendEvent(roomId, "m.room.message", message).then((response) => {
+            console.log("Sent message");
+            console.log(response);
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
 
   render() {
       const { client } = this.props;
@@ -157,9 +171,11 @@ class Room extends React.Component {
               </table>
               <div id='chat' align="center">
                   <h3>Chat</h3>
-                  <textarea id="dataChannelOutput" rows="5" style={{width:"90%"}} disabled></textarea>
-                  <textarea id="dataChannelInput" rows="1" style={{width:"90%"}}></textarea>
-                  <button id="sendButton" onClick={this.sendMessage}>Send message</button>
+                  <form>
+                    <textarea style={{width:"90%", minHeight: "300px"}} value={this.state.chat.join("\n")} readOnly disabled />
+                    <input id="dataChannelInput" type="text" onChange={this.handleInput} value={this.state.input} />
+                    <input id="sendButton" onClick={this.sendMessage} type="submit" value="Send" />
+                  </form>
               </div>
           </div>
       );
