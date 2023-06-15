@@ -1,28 +1,59 @@
 console.log("Loading browser sdk");
 
 const BASE_URL = "http://localhost:8008";
-const TOKEN = "syt_dXNlcjE_wLbuITopgWeSzQjZQREV_33qjaW";
+const TOKEN = "syt_dXNlcjE_fhqYFqUYLRdHyjZkTgyh_0kOGi6";
 const USER_ID = "@user1:vmm.matrix.host";
 const USER_PSW = "user1";
 
-const ROOM_ID = "!jVxOVAcKJyLWgKuxIq:vmm.matrix.host";
+const ROOM_ID = "!tcCQobxnDOHnIOGmdY:vmm.matrix.host";
 const DEVICE_ID = "some_device_id";
 
 
-const client = matrixcs.createClient({
-    baseUrl: BASE_URL,
-    accessToken: TOKEN,
-    userId: USER_ID,
-    deviceId: DEVICE_ID,
-});
-
-
-
-//const client =  matrixcs.createClient(BASE_URL);
-
-//client.login("m.login.password", {"user": USER_ID, "password": USER_PSW}).then((response) => {
-//    console.log(response.access_token);
+//const client = matrixcs.createClient({
+   // baseUrl: BASE_URL,
+   // accessToken: TOKEN,
+   // userId: USER_ID,
+   // deviceId: DEVICE_ID,
 //});
+
+
+let client;
+
+
+
+async function login(){
+    client =  matrixcs.createClient({baseUrl:BASE_URL});
+
+    console.log(client);
+
+    
+    let id = document.getElementById('username').value; 
+    let pass = document.getElementById('password').value; 
+
+
+    console.log("Debut login");
+
+    response = await client.login("m.login.password", {"user": id, "password": pass});
+
+    console.log("LOGIN");
+
+    console.log(response.access_token);
+
+    //client.setAccessToken(response.access_token, response.device_id);
+    
+
+    client.startClient();
+    client.on("sync", function (state, prevState, data) {
+        switch (state) {
+            case "PREPARED":
+                syncComplete();
+                break;
+        }
+    });
+    
+
+}
+
 
 
 let call;
@@ -80,13 +111,7 @@ window.onload = function () {
     disableButtons(true, true, true);
 };
 
-client.on("sync", function (state, prevState, data) {
-    switch (state) {
-        case "PREPARED":
-            syncComplete();
-            break;
-    }
-});
+
 
 function syncComplete() {
     document.getElementById("result").innerHTML = "<p>Ready for calls.</p>";
@@ -124,9 +149,11 @@ function syncComplete() {
         call = c;
         addListeners(call);
     });
-}
-client.startClient();
 
-client.once('sync', function(state, prevState, res) {
-    console.log(state); // state will be 'PREPARED' when the client is ready to use
-});
+    client.on("event", function(event){
+        console.log(event.getType());
+        console.log(event);
+    });
+}
+
+

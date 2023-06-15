@@ -117,6 +117,11 @@ To develop the web client, you should use the following documentation:
 * [MatrixClient doc](http://matrix-org.github.io/matrix-js-sdk/stable/classes/MatrixClient.html)
 * [Matrix documentation](https://matrix.org/discover/)
 
+
+
+Pour faire fonctionner avec le token il faut que l'app Element soit allumé et connecté au compte.
+
+
 <!--
 OLM:
 See http://matrix-org.github.io/matrix-js-sdk/23.5.0/index.html#end-to-end-encryption-support
