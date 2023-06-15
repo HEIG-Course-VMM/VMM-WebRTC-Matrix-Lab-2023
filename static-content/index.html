@@ -9,6 +9,21 @@
     <body>
         You can place and receive calls with this example. Make sure to edit the constants in
         <code>browserTest.js</code> first.
+
+        <h2>Login Form</h2>
+        
+        <div>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div>
+            <button onclick="login()">Login</button>
+        </div>
+
         <div id="config"></div>
         <div id="result"></div>
         <button id="call" >Place Call</button>
@@ -18,19 +33,7 @@
             <video class="video-element" id="local"></video>
             <video class="video-element" id="remote"></video>
         </div>
-        <h2>Login Form</h2>
         
-            <div>
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
-            </div>
-            <div>
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <div>
-                <button onclick="login()">Login</button>
-            </div>
         
     </body>
 </html>

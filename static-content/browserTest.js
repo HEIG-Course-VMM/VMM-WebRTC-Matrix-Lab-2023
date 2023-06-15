@@ -42,6 +42,7 @@ async function login(){
     
 
     client.startClient();
+
     client.on("sync", function (state, prevState, data) {
         switch (state) {
             case "PREPARED":
@@ -121,7 +122,12 @@ function syncComplete() {
         call = matrixcs.createNewMatrixCall(client, ROOM_ID);
         console.log("Call => %s", call);
         addListeners(call);
+
+        //let stream = navigator.mediaDevices.getDisplayMedia({video: true});
+
         call.placeVideoCall();
+        //call.updateLocalUsermediaStream(stream);
+
         document.getElementById("result").innerHTML = "<p>Placed call.</p>";
         disableButtons(true, true, false);
     };
