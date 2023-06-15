@@ -5,7 +5,7 @@ function onSubmit() {
     let login = document.getElementById("username").value;
     let password = document.getElementById("password").value;
     console.log(JSON.stringify(login) + " " + JSON.stringify(password));
-    try{
+    try {
       const client = matrixcs.createClient({ baseUrl: BASE_URL });
       let token = await client.login("m.login.password", {
         user: login,
@@ -13,9 +13,8 @@ function onSubmit() {
       });
       localStorage.setItem("token", JSON.stringify(token));
       console.log(JSON.stringify(token));
-
-    }catch(e){
-      console.log("ça marche pas !!")
+    } catch (e) {
+      console.log("ça marche pas !!");
     }
   })();
 
