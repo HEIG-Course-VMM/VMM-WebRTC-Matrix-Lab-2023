@@ -114,7 +114,7 @@ class Room extends React.Component {
   sendMessage = () => {
     console.log("Sending message...");
   }
-  
+
   render() {
       const { client } = this.props;
       const { connected } = this.state;
@@ -127,13 +127,13 @@ class Room extends React.Component {
           <div id='mainDiv' align="center">
               <h1>Make free video calls</h1>
               <div id='callButtons' align="center">
-                  <button id="callButton">Call</button>
-                  <button id="hangupButton">Hang up</button>
-                  <button id="answerButton">Answer</button>
+                  <button id="callButton" onClick={this.placeCall}>Call</button>
+                  <button id="hangupButton" onClick={this.hangup}>Hang up</button>
+                  <button id="answerButton" onClick={this.answer}>Answer</button>
               </div>
               <div id="result"></div>
               <h3>Streams and data channels</h3>
-              <table class="pure-table pure-table" width="90%">
+              <table className="pure-table pure-table" width="90%">
                   <thead>
                       <tr>
                           <th>Local video</th>
@@ -142,8 +142,8 @@ class Room extends React.Component {
                   </thead>
                   <tbody>
                       <tr>
-                          <td width="50%"> <video id="localVideo" autoplay mute playsinline width="100%"></video> </td>
-                          <td width="50%"> <video id="remoteVideo" autoplay playsinline width="100%"></video> </td>
+                          <td width="50%"> <video id="localVideo" autoPlay playsInline width="100%"></video> </td>
+                          <td width="50%"> <video id="remoteVideo" autoPlay playsInline width="100%"></video> </td>
                       </tr>
                   </tbody>
               </table>
@@ -151,7 +151,7 @@ class Room extends React.Component {
                   <h3>Chat</h3>
                   <textarea id="dataChannelOutput" rows="5" style={{width:"90%"}} disabled></textarea>
                   <textarea id="dataChannelInput" rows="1" style={{width:"90%"}}></textarea>
-                  <button id="sendButton" onclick="sendMessage()">Send message</button>
+                  <button id="sendButton" onClick={this.sendMessage}>Send message</button>
               </div>
           </div>
       );
