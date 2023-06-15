@@ -82,14 +82,24 @@ function addListeners(call) {
         const remoteElement = document.getElementById("remote");
         const localElement = document.getElementById("local");
 
+
         if (remoteFeed) {
+            console.log("remoteFeed: ")
+            console.log(remoteFeed);
             remoteElement.srcObject = remoteFeed.stream;
             remoteElement.play();
         }
         if (localFeed) {
+            console.log("localfeed:");
+            console.log(localFeed);
             localElement.muted = true;
             localElement.srcObject = localFeed.stream;
             localElement.play();
+        }else{
+            if(localElement.srcObject){
+                localElement.srcObject.getTracks().foreach(track => track.stop());
+                localElement.srcObject = null;
+            }
         }
     });
 }
@@ -137,6 +147,15 @@ function syncComplete() {
         console.log("Call => %s", call);
         call.hangup();
         document.getElementById("result").innerHTML = "<p>Hungup call.</p>";
+    };
+
+
+    document.getElementById("screen").onclick =  async function () {
+        console.log("Screen sharing...");
+        console.log("Call => %s", call);
+        let stream = await navigator.mediaDevices.getDisplayMedia({video: true});
+        call.updateLocalUsermediaStream(stream);
+        document.getElementById("result").innerHTML = "<p>Screen Sharing.</p>";
     };
 
     document.getElementById("answer").onclick = function () {
