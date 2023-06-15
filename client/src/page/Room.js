@@ -3,21 +3,43 @@ import { useParams } from "react-router-dom";
 import sdk from "matrix-js-sdk";
 
 function withParams(Component) {
-  return props => <Component {...props} params={useParams()} />;
+    return props => <Component {...props} params={useParams()} />;
 }
 
 class Room extends React.Component {
+    constructor(props) {
+        super(props);
+        this.call = null;
+        this.state = {
+            connected: false,
+        };
+    }
 
-  constructor(props) {
-    super(props);
-    this.call = null;
-  }
+    componentDidMount() {
+        const { client } = this.props;
+        const { roomId } = this.props.params;
+        client.joinRoom(roomId).then((response) => {
+            console.log("Joined room %s", roomId);
+            this.setState({ connected: true });
 
-  disableButtons = (place, answer, hangup)  => {
-    document.getElementById("hangupButton").disabled = hangup;
-    document.getElementById("answerButton").disabled = answer;
-    document.getElementById("callButton").disabled = place;
-  }
+            client.on("Room.timeline", (event, room) => {
+                console.log("New message");
+                console.log(event);
+                const sender = event.sender.name;
+                const message = event.event.content.body;
+                console.log("Message from %s: %s", sender, message);
+            });
+        }).catch((error) => {
+            console.log(error);
+            this.setState({ connected: false });
+        });
+    }
+
+    disableButtons = (place, answer, hangup)  => {
+        document.getElementById("hangupButton").disabled = hangup;
+        document.getElementById("answerButton").disabled = answer;
+        document.getElementById("callButton").disabled = place;
+    }
 
   addListeners = (call) => {
     let lastError = "";
@@ -34,20 +56,20 @@ class Room extends React.Component {
         const localFeed = feeds.find((feed) => feed.isLocal());
         const remoteFeed = feeds.find((feed) => !feed.isLocal());
 
-        const remoteElement = document.getElementById("remoteVideo");
-        const localElement = document.getElementById("localVideo");
+            const remoteElement = document.getElementById("remoteVideo");
+            const localElement = document.getElementById("localVideo");
 
-        if (remoteFeed) {
-            remoteElement.srcObject = remoteFeed.stream;
-            remoteElement.play();
-        }
-        if (localFeed) {
-            localElement.muted = true;
-            localElement.srcObject = localFeed.stream;
-            localElement.play();
-        }
-    });
-  }
+            if (remoteFeed) {
+                remoteElement.srcObject = remoteFeed.stream;
+                remoteElement.play();
+            }
+            if (localFeed) {
+                localElement.muted = true;
+                localElement.srcObject = localFeed.stream;
+                localElement.play();
+            }
+        });
+    }
 
   placeCall = () => {
     console.log("Placing call...");
@@ -80,7 +102,7 @@ class Room extends React.Component {
     this.disableButtons(false, true, true);
 
     const { client } = this.props;
-    client.on("Call.incoming", (c) => {
+    client.on("Call.incoming", function (c) {
         console.log("Call ringing");
         this.disableButtons(true, false, false);
         document.getElementById("result").innerHTML = "<p>Incoming call...</p>";
@@ -92,40 +114,47 @@ class Room extends React.Component {
   sendMessage = () => {
     console.log("Sending message...");
   }
-
+  
   render() {
-    return (
-      <div id='mainDiv' align="center">
-        <h1>Make free video calls</h1>
-        <div id='callButtons' align="center">
-            <button id="callButton" onClick={this.placeCall}>Call</button>
-            <button id="hangupButton" onClick={this.hangup}>Hang up</button>
-            <button id="answerButton" onClick={this.answer}>Answer</button>
-        </div>
-        <div id="result"></div>
-        <h3>Streams and data channels</h3>
-        <table className="pure-table pure-table" width="90%">
-            <thead>
-                <tr>
-                    <th>Local video</th>
-                    <th>Remote video</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td width="50%"> <video id="localVideo" autoPlay playsInline width="100%"></video> </td>
-                    <td width="50%"> <video id="remoteVideo" autoPlay playsInline width="100%"></video> </td>
-                </tr>
-            </tbody>
-        </table>
-        <div id='chat' align="center">
-            <h3>Chat</h3>
-            <textarea id="dataChannelOutput" rows="5" style={{width:"90%"}} disabled></textarea>
-            <textarea id="dataChannelInput" rows="1" style={{width:"90%"}}></textarea>
-            <button id="sendButton" onClick={this.sendMessage}>Send message</button>
-        </div>
-      </div>
-    );
+      const { client } = this.props;
+      const { connected } = this.state;
+
+      if (!connected) {
+          return <h1>Failing to connect to room</h1>;
+      }
+
+      return (
+          <div id='mainDiv' align="center">
+              <h1>Make free video calls</h1>
+              <div id='callButtons' align="center">
+                  <button id="callButton">Call</button>
+                  <button id="hangupButton">Hang up</button>
+                  <button id="answerButton">Answer</button>
+              </div>
+              <div id="result"></div>
+              <h3>Streams and data channels</h3>
+              <table class="pure-table pure-table" width="90%">
+                  <thead>
+                      <tr>
+                          <th>Local video</th>
+                          <th>Remote video</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+                          <td width="50%"> <video id="localVideo" autoplay mute playsinline width="100%"></video> </td>
+                          <td width="50%"> <video id="remoteVideo" autoplay playsinline width="100%"></video> </td>
+                      </tr>
+                  </tbody>
+              </table>
+              <div id='chat' align="center">
+                  <h3>Chat</h3>
+                  <textarea id="dataChannelOutput" rows="5" style={{width:"90%"}} disabled></textarea>
+                  <textarea id="dataChannelInput" rows="1" style={{width:"90%"}}></textarea>
+                  <button id="sendButton" onclick="sendMessage()">Send message</button>
+              </div>
+          </div>
+      );
   }
 }
 
