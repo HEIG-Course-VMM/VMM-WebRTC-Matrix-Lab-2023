@@ -1,6 +1,5 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import sdk from "matrix-js-sdk";
 
 function withParams(Component) {
     return props => <Component {...props} params={useParams()} />;
@@ -18,6 +17,7 @@ class Room extends React.Component {
             place: false,
             hangup: true,
             answer: true,
+            result: ""
         };
     }
 
@@ -39,10 +39,9 @@ class Room extends React.Component {
             });
 
             client.on("Call.incoming", (call, room) => {
-                console.log("Call ringing");
                 const { roomId } = this.props.params;
                 if (call.roomId === roomId) {
-                    console.log("Call ringing in this room");
+                    this.setState({ result: "Call ringing..." });
                     this.addListeners(call);
                     this.setState({ call, place: true, hangup: true, answer: false });
                 }
@@ -65,7 +64,7 @@ class Room extends React.Component {
     let lastError = "";
     call.on("hangup", () => {
         console.log("Call hangup, disabling buttons false true true");
-        this.setState({ call: null });
+        this.setState({ call: null, result: "Call ended. Last error: " + lastError });
 
         const remoteElement = document.getElementById("remoteVideo");
         const localElement = document.getElementById("localVideo");
@@ -120,14 +119,14 @@ class Room extends React.Component {
     const { call } = this.state;
     this.setState({ call: null, place: false, hangup: true, answer: true });
     call.hangup();
-    document.getElementById("result").innerHTML = "<p>Hungup call.</p>";
+    this.setState({result: "Hungup call."})
   }
 
   answer = () => {
     console.log("Answering call...");
     const { call } = this.state;
     call.answer();
-    this.setState({ place: true, hangup: false, answer: true });
+    this.setState({ place: true, hangup: false, answer: true, result: "Answered call." });
     document.getElementById("result").innerHTML = "<p>Answered call.</p>";
   }
 
@@ -150,7 +149,6 @@ class Room extends React.Component {
     }
 
   render() {
-      const { client } = this.props;
       const { connected } = this.state;
 
       if (!connected) {
@@ -165,7 +163,7 @@ class Room extends React.Component {
                   <button id="hangupButton" onClick={this.hangup} disabled={this.state.hangup}>Hangup</button>
                   <button id="answerButton" onClick={this.answer} disabled={this.state.answer}>Answer</button>
               </div>
-              <div id="result"></div>
+              <div id="result">{this.state.result}</div>
               <h3>Streams and data channels</h3>
               <table className="pure-table pure-table" width="90%">
                   <thead>
