@@ -10,6 +10,7 @@ import {
 import Login from "./page/Login";
 import Rooms from "./page/Rooms";
 import Home from "./page/Home";
+import Room from "./page/Room";
 
 class App extends React.Component {
 
@@ -35,7 +36,7 @@ class App extends React.Component {
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<Login client={client} setClient={setClient} />} />
-            <Route path="/rooms/:roomID" element={!client ? <Navigate to="/login" /> : <Rooms client={client} />} />
+            <Route path="/rooms/:roomId" element={!client ? <Navigate to="/login" /> : <Room client={client} />} />
             <Route path="/rooms" element={!client ? <Navigate to="/login" /> : <Rooms client={client} />} />
             <Route path="/" element={<Home />} />
           </Routes>
