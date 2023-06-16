@@ -1,0 +1,5 @@
+/web/node_modules/*
+/client/node_modules/*
+/matrix-data/*.db
+/matrix-data/*.db-shm
+/matrix-data/*.db-wal

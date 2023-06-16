@@ -1,0 +1,25 @@
+version: '3'
+services:
+
+  client:
+    build:
+      context: client
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./client:/usr/src/app/frontend
+      - /usr/src/app/frontend/node_modules
+
+  synapse:
+    image: matrixdotorg/synapse:latest
+    ports:
+      - 8008:8008
+      - 8448:8448
+    volumes:
+      - ./matrix-data:/data
+    environment:
+      - SYNAPSE_SERVER_NAME=vmm.matrix.host
+      - SYNAPSE_REPORT_STATS=yes
+      - UID=1000
+      - GID=1000
