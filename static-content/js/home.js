@@ -1,4 +1,5 @@
 let client = null;
+let room = null;
 // let device = null;
 const ROOM_ID = "!NYJPSxbbXiXSrYlbfr:vmm.matrix.host";
 const BASE_URL = "http://localhost:8008";
@@ -18,6 +19,17 @@ async function getClient() {
     userId: token.user_id,
     deviceId: DEVICE_ID,
   });
+
+  client.on("Room.timeline", function (event, room, toStartOfTimeline) {
+    if(event.getType() !== "m.room.message") {
+      return;
+    }
+    console.log(event);
+    let message = event.sender.name + ": " + event.event.content.body;
+    let textArea = document.getElementById("messagesList");
+    textArea.value = textArea.value + "\n" + message; 
+  });
+
   return client;
 }
 
@@ -40,20 +52,18 @@ async function main() {
 async function call() {
   // Enable local video stream from camera or screen sharing
   // const localStream = await enable_camera();
-
-  let room = askRoom();
-  let alias = "#" + room + ":vmm.matrix.host";
-  let founded_room = await client.getRoomIdForAlias(alias);
-  console.log("Room ID: " + founded_room.room_id);
-
-  call = client.createCall(founded_room.room_id);
+  call = client.createCall(room.room_id);
   addListeners(call);
   call.placeVideoCall();
 }
 
-function askRoom() {
-  let room = prompt("Enter room name:");
-  return room;
+async function joinRoom() {
+  let roomName = prompt("Enter room name:");
+
+  let alias = "#" + roomName + ":vmm.matrix.host";
+  let founded_room = await client.getRoomIdForAlias(alias);
+  console.log("Room ID: " + founded_room.room_id);
+  room = founded_room;
 }
 
 function syncComplete() {
@@ -122,3 +132,16 @@ function addListeners(call) {
     }
   });
 }
+
+async function sendMessage() {
+  const content = {
+    body: document.getElementById("messageInput").value,
+    msgtype: "m.text"
+  }
+  document.getElementById("messageInput").value = "";
+
+  client.sendEvent(room.room_id, "m.room.message", content, "", (err, res) => {
+    console.log(err);
+  });
+}
+

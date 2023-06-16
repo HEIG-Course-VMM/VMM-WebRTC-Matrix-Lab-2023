@@ -12,6 +12,7 @@ function onSubmit() {
         password: password,
       });
       localStorage.setItem("token", JSON.stringify(token));
+      window.location.href = "/index.html";
       console.log(JSON.stringify(token));
     } catch (e) {
       console.log("ça marche pas !!");

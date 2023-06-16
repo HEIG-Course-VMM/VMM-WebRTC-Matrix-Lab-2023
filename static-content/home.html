@@ -12,6 +12,7 @@
     <div id="mainDiv" align="center">
       <h1>Make free video calls</h1>
       <div id="callButtons" align="center">
+        <button id="joinRoom" onclick="joinRoom()">Join Room</button>
         <button id="callButton" onclick="call()">Call</button>
         <button id="hangupButton" onclick="hangUp()">Hang up</button>
       </div>
@@ -43,12 +44,12 @@
       <div id="chat" align="center">
         <h3>Chat</h3>
         <textarea
-          id="dataChannelOutput"
+          id="messagesList"
           rows="5"
           style="width: 90%"
           disabled
         ></textarea>
-        <textarea id="dataChannelInput" rows="1" style="width: 90%"></textarea>
+        <textarea id="messageInput" rows="1" style="width: 90%"></textarea>
         <br />
         <button id="sendButton" onclick="sendMessage()">Send message</button>
       </div>
