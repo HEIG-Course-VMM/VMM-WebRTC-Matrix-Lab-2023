@@ -1,22 +1,24 @@
 console.log("Loading browser sdk");
 const BASE_URL = "http://127.0.0.1:8008";
-const USER_ID = "@user1:vmm.matrix.host";
-const ROOM_ID = "!vDvvrMraNjycdDzPdW:vmm.matrix.host";
 
 const deviceId = Math.random().toString(36).substring(2, 15)
 
 const client = matrixcs.createClient({ baseUrl: "http://localhost:8008", deviceId: deviceId });
 
-client.login("m.login.password", {"user": "user1", "password": "user1"}).then((response) => {
-    console.log(response.access_token);
-    console.log(response.device_id);
-    client.setAccessToken(response.access_token, response.device_id);
-    client.startClient();
-
-    client.once('sync', function(state, prevState, res) {
-        console.log(state); // state will be 'PREPARED' when the client is ready to use
+function login(){
+    client.login("m.login.password", {"user": document.forms.user.username.value, "password": document.forms.user.password.value}).then((response) => {
+        console.log(response.access_token);
+        console.log(response.device_id);
+        client.setAccessToken(response.access_token, response.device_id);
+        client.startClient();
+    
+        client.once('sync', function(state, prevState, res) {
+            console.log(state); // state will be 'PREPARED' when the client is ready to use
+        });
     });
-});
+}
+
+
 let call;
 
 function disableButtons(place, answer, hangup) {
@@ -57,36 +59,45 @@ function addListeners(call) {
 
 window.onload = function () {
     document.getElementById("result").innerHTML = "<p>Please wait. Syncing...</p>";
-    document.getElementById("config").innerHTML =
-        "<p>" +
-        "Homeserver: <code>" +
-        BASE_URL +
-        "</code><br/>" +
-        "Room: <code>" +
-        ROOM_ID +
-        "</code><br/>" +
-        "User: <code>" +
-        USER_ID +
-        "</code><br/>" +
-        "</p>";
     disableButtons(true, true, true);
 };
 
 client.on("sync", function (state, prevState, data) {
     switch (state) {
         case "PREPARED":
-            syncComplete();
+            document.getElementById("result").innerHTML = "<p>Ready for calls.</p>";
+            disableButtons(false, true, true);
+        
+            var rooms = client.getRooms();
+            let list = document.getElementById("rooms");
+            rooms.forEach(room => {
+                var li = document.createElement('li');
+                li.innerText = room.roomId;
+                list.appendChild(li);
+            });
             break;
     }
 });
 
 function syncComplete() {
-    document.getElementById("result").innerHTML = "<p>Ready for calls.</p>";
-    disableButtons(false, true, true);
+
+
+    document.getElementById("config").innerHTML =
+    "<p>" +
+    "Homeserver: <code>" +
+    BASE_URL +
+    "</code><br/>" +
+    "Room: <code>" +
+    document.forms.chooseRoom.roomId.value +
+    "</code><br/>" +
+    "User: <code>" +
+    document.forms.user.username.value +
+    "</code><br/>" +
+    "</p>";
 
     document.getElementById("call").onclick = function () {
         console.log("Placing call...");
-        call = matrixcs.createNewMatrixCall(client, ROOM_ID);
+        call = matrixcs.createNewMatrixCall(client, document.forms.chooseRoom.roomId.value);
         console.log("Call => %s", call);
         addListeners(call);
         call.placeVideoCall();
@@ -116,8 +127,24 @@ function syncComplete() {
         call = c;
         addListeners(call);
     });
-    var rooms = client.getRooms();
-    rooms.forEach(room => {
-        console.log("ROOM ID :", room.roomId);
+}
+
+client.on("Room.timeline", function(event, room, toStartOfTimeline){
+    if(event.getType() !== "m.room.message"){
+        return;
+    }
+    if(event.getRoomId() === document.forms.chooseRoom.roomId.value){
+        document.getElementById("recMessage").innerHTML = event.getContent().body;
+    }
+});
+
+function sendMessage() {
+    var content = {
+        "body": document.forms.message.message.value,
+        "msgtype": "m.notice"
+    };
+
+    client.sendEvent(document.forms.chooseRoom.roomId.value, "m.room.message", content, "", (err, res) => {
+        console.log(err);
     });
 }
