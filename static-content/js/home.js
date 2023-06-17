@@ -72,7 +72,6 @@ function syncComplete() {
     // document.getElementById("result").innerHTML = "<p>Incoming call...</p>";
     if (confirm("Incoming call...")) {
       call = c;
-      const localStream = await enable_camera();
 
       addListeners(call);
       call.answer();
@@ -82,33 +81,7 @@ function syncComplete() {
   });
 }
 
-async function enable_camera() {
-  const constraints = { video: true, audio: true };
-  console.log("Getting user media with constraints", constraints);
-
-  // *** TODO ***: use getUserMedia to get a local media stream from the camera.
-  //               If this fails, use getDisplayMedia to get a screen sharing stream.
-  let stream;
-  try {
-    stream = await navigator.mediaDevices.getUserMedia(constraints);
-  } catch (error) {
-    try {
-      stream = await navigator.mediaDevices.getDisplayMedia();
-    } catch (error2) {
-      console.error("Error accessing media devices", error);
-    }
-  }
-  document.getElementById("localVideo").srcObject = stream;
-  return stream;
-}
-
 function addListeners(call) {
-  let lastError = "";
-  // call.on("hangup", function () {
-  //   disableButtons(false, true, true);
-  //   document.getElementById("result").innerHTML =
-  //     "<p>Call ended. Last error: " + lastError + "</p>";
-  // });
   call.on("error", function (err) {
     lastError = err.message;
     call.hangup();
@@ -134,6 +107,10 @@ function addListeners(call) {
 }
 
 async function sendMessage() {
+  if (room == null){
+    alert("Join a room first");
+    return;
+  }
   const content = {
     body: document.getElementById("messageInput").value,
     msgtype: "m.text"
