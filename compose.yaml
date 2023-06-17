@@ -1,0 +1,19 @@
+services:
+  synapse:
+    image: "matrixdotorg/synapse:latest"
+    container_name: "synapse"
+    volumes:
+      - ./matrix-data:/data
+    environment:
+        SYNAPSE_SERVER_NAME: "vmm.matrix.host"
+        SYNAPSE_REPORT_STATS: "yes"
+        UID: 1000
+        GID: 1000
+    ports:
+        - "8008:8008/tcp"
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000

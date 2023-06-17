@@ -1,0 +1,49 @@
+<html>
+    <head>
+        <title>VoIP Test</title>
+        <script src="lib/matrix.js"></script>
+        <script src="lib/browserTest.js"></script>
+    </head>
+
+    <body>
+        You can place and receive calls with this example. Make sure to edit the constants in
+        <code>browserTest.js</code> first.
+        <form name="user">
+            <input type="text" id="username" name="username">
+            <input type="text" id="password" name="password">
+            <input type="button" name="valid" value="Connexion" onClick="login()">
+        </form>
+        
+        <div id="config"></div>
+        <div id="rooms">Rooms:</div>
+        <form name="chooseRoom">
+            <input type="text" id="roomId" name="roomId">
+            <input type="button" name="valid" value="Connexion" onClick="syncComplete()">
+        </form>
+        <div id="result"></div>
+        <button id="call">Place Call</button>
+        <button id="answer">Answer Call</button>
+        <button id="hangup">Hangup Call</button>
+        <div id="videoBackground" class="video-background">
+            <video class="video-element" id="local"></video>
+            <video class="video-element" id="remote"></video>
+        </div>
+        <form name="message">
+            <input type="text" id="message" name="message">
+            <input type="button" name="envoyer" value="envoyer" onClick="sendMessage()">
+        </form>
+        <div>Messages reçus :</div>
+        <div id="recMessage"></div>
+    </body>
+</html>
+
+<style>
+    .video-background {
+        height: 500px;
+        margin: 10px;
+    }
+
+    .video-element {
+        height: 100%;
+    }
+</style>
