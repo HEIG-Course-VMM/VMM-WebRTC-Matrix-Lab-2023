@@ -1,0 +1,45 @@
+# Configuration file for Synapse.
+#
+# This is a YAML file: see [1] for a quick introduction. Note in particular
+# that *indentation is important*: all the elements of a list or dictionary
+# should have the same indentation.
+#
+# [1] https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html
+#
+# For more information on how to configure Synapse, including a complete accounting of
+# each option, go to docs/usage/configuration/config_documentation.md or
+# https://matrix-org.github.io/synapse/latest/usage/configuration/config_documentation.html
+server_name: "vmm.matrix.host"
+pid_file: /data/homeserver.pid
+listeners:
+  - port: 8008
+    tls: false
+    type: http
+    x_forwarded: true
+    resources:
+      - names: [client, federation]
+        compress: false
+database:
+  name: sqlite3
+  args:
+    database: /data/homeserver.db
+log_config: "/data/vmm.matrix.host.log.config"
+media_store_path: /data/media_store
+registration_shared_secret: "f_iQ=m#q33FO^ZX=5Gdkev4F36R=uRKvikaGmLm=0h@XHMf1wg"
+report_stats: true
+macaroon_secret_key: "itLhq.ljDng^hS29CdbUMlGSccNogy#@W.2De*5.Db*UHuul7t"
+form_secret: "Zo9C1AS#d8Wm4s38BaI,HaZA;nU,:s-P_oF~16ID,&ZetP=y#W"
+signing_key_path: "/data/vmm.matrix.host.signing.key"
+trusted_key_servers:
+  - server_name: "matrix.org"
+rc_login:
+  address:
+    per_second: 0.15
+    burst_count: 100
+  account:
+    per_second: 0.18
+    burst_count: 100
+  failed_attempts:
+    per_second: 0.19
+    burst_count: 7
+# vim:ft=yaml
