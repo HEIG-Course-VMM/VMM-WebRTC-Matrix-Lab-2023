@@ -52,10 +52,10 @@ In particular, you have to:
 * add the server to your docker-compose file and start the infrastructure,
 * create an admin user and two other users (e.g. user1, user2, user3). **Use the username as password** (i.e., "user1" as password for user1, etc.).
   ```
-  docker exec -it vmm-matrix-1 register_new_matrix_user http://localhost:8008 -c /data/homeserver.yaml -u admin
-  docker exec -it vmm-matrix-1 register_new_matrix_user http://localhost:8008 -c /data/homeserver.yaml -u user1
-  docker exec -it vmm-matrix-1 register_new_matrix_user http://localhost:8008 -c /data/homeserver.yaml -u user2
-  docker exec -it vmm-matrix-1 register_new_matrix_user http://localhost:8008 -c /data/homeserver.yaml -u user3
+  docker exec -it vmm-webrtc-matrix-lab-2023-synapse-1 register_new_matrix_user http://localhost:8008 -c /data/homeserver.yaml -u admin
+  docker exec -it vmm-webrtc-matrix-lab-2023-synapse-1 register_new_matrix_user http://localhost:8008 -c /data/homeserver.yaml -u user1
+  docker exec -it vmm-webrtc-matrix-lab-2023-synapse-1 register_new_matrix_user http://localhost:8008 -c /data/homeserver.yaml -u user2
+  docker exec -it vmm-webrtc-matrix-lab-2023-synapse-1 register_new_matrix_user http://localhost:8008 -c /data/homeserver.yaml -u user3
   ```
 
 * You should check the `server_name` in `./matrix_data/homeserver.yaml`. A name such as `vmm.matrix.host` is ok.
@@ -116,6 +116,11 @@ To develop the web client, you should use the following documentation:
 * [Matrix JS SDK doc](https://github.com/matrix-org/matrix-js-sdk/)
 * [MatrixClient doc](http://matrix-org.github.io/matrix-js-sdk/stable/classes/MatrixClient.html)
 * [Matrix documentation](https://matrix.org/discover/)
+
+
+
+Pour faire fonctionner avec le token il faut que l'app Element soit allumé et connecté au compte.
+
 
 <!--
 OLM:
